@@ -18,11 +18,13 @@ public class StudentDaoImpl implements CorporateEventDao {
     private static JdbcTemplate template;
     @Value("${studentInsertSQL}")
     private String insertSQL;
+    private StringBuilder builder;
 
     @Autowired
     @Override
     public void setDataSource(DataSource mysqlDataSource) {
         template = new JdbcTemplate(mysqlDataSource);
+        builder = new StringBuilder();
     }
 
 
@@ -31,13 +33,16 @@ public class StudentDaoImpl implements CorporateEventDao {
     }
 
     public boolean insert(String name, Integer registno, Integer kdno, Integer kcno, Integer ccno, Integer seat) {
-        String sql = insertSQL.substring(0, insertSQL.lastIndexOf('('))
-                + "(" + registno + ", " + name + ", " + kdno + ", " + kcno + ", " + ccno + ", " + seat + ")";
+        builder.append(insertSQL.substring(0, insertSQL.lastIndexOf('(')))
+                .append("(").append(registno).append(", ").append(name).append(", ")
+                .append(kdno).append(", ").append(kcno).append(", ")
+                .append(ccno).append(", ").append(seat).append(")");
         boolean res = insert(insertSQL, registno, name, kdno, kcno, ccno, seat);
         if (res) {
-            Logger.add_data_sql(sql);
+            Logger.add_data_sql(builder.toString());
         } else
-            Logger.add_dup_data_sql(sql);
+            Logger.add_dup_data_sql(builder.toString());
+        builder.delete(0, builder.length());
         return res;
     }
 

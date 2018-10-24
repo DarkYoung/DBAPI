@@ -14,21 +14,14 @@ public class Logger {
     private static int dupCount = 0;
 
     static {
-        try {
-            idFos = new FileOutputStream(new File(dupLogPath));
-            iFos = new FileOutputStream(new File(logPath));
-            idBos = new BufferedOutputStream(idFos);
-            iBos = new BufferedOutputStream(iFos);
-        } catch (FileNotFoundException e) {
-            System.out.println("Error: fail to open log file!");
-        }
+        initStream();
     }
 
     public static void add_data_sql(String sql) {
         try {
+            insertCount++;
             iBos.write(sql.getBytes());
             iBos.write("\n".getBytes());
-            insertCount++;
         } catch (IOException ignored) {
 
         }
@@ -36,9 +29,9 @@ public class Logger {
 
     public static void add_dup_data_sql(String sql) {
         try {
+            dupCount++;
             idBos.write(sql.getBytes());
             idBos.write("\n".getBytes());
-            dupCount++;
         } catch (IOException ignored) {
         }
     }
@@ -49,6 +42,23 @@ public class Logger {
 
     public static int getDupCount() {
         return dupCount;
+    }
+
+    public static void reset() {
+        insertCount = 0;
+        dupCount = 0;
+        initStream();
+    }
+
+    private static void initStream() {
+        try {
+            idFos = new FileOutputStream(new File(dupLogPath));
+            iFos = new FileOutputStream(new File(logPath));
+            idBos = new BufferedOutputStream(idFos);
+            iBos = new BufferedOutputStream(iFos);
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: fail to open log file!");
+        }
     }
 
     public static void close() {

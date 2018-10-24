@@ -61,4 +61,8 @@ public class Room {
     public void setExptime(Timestamp exptime) {
         this.exptime = exptime;
     }
+
+    public String getPrimaryKey() {
+        return kdno + "-" + kcno + "-" + ccno;
+    }
 }

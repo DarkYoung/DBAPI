@@ -14,13 +14,17 @@ public class MainApp {
 
         //1. 通过csv文件导入数据MySQL
         CSVDaoImpl csvDao = (CSVDaoImpl) context.getBean("csvDaoImpl");
-        System.out.println("成功读入" + csvDao.readData(context) + "条数据！");
+        long time = System.currentTimeMillis();
+        System.out.println("成功读入" + csvDao.readData() + "条数据！");
         System.out.println(Logger.getDupCount() + "条重复数据导入失败！");
-
+        System.out.println("耗时：" + (System.currentTimeMillis() - time) + "ms");
+        Logger.reset();
         //2.通过sqlite数据源导入数据到MySQL
         DBDaoImpl dbDao = (DBDaoImpl) context.getBean("dbDaoImpl");
-        System.out.println("成功读入" + dbDao.readData(context) + "条数据！");
+        long time2 = System.currentTimeMillis();
+        System.out.println("成功读入" + dbDao.readData() + "条数据！");
         System.out.println(Logger.getDupCount() + "条重复数据导入失败！");
-
+        System.out.println("耗时：" + (System.currentTimeMillis() - time2) + "ms");
+        Logger.close();
     }
 }
